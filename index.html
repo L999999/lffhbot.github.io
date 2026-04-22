@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>方亨日记 · 江阴遗卷</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #dcd0b5;
+            background-image: radial-gradient(circle at 10% 20%, rgba(200, 170, 120, 0.1) 2%, transparent 2.5%);
+            background-size: 28px 28px;
+            font-family: 'Georgia', '宋体', 'SimSun', 'Times New Roman', serif;
+            padding: 48px 24px;
+        }
+
+        .book-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: #fef7e8;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.2), inset 0 0 0 1px rgba(255, 245, 215, 0.8);
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .book-container::before {
+            content: "";
+            position: absolute;
+            top: 20px;
+            bottom: 20px;
+            left: -12px;
+            width: 12px;
+            background: linear-gradient(to right, #b59a6b, #e9dbbc, #b59a6b);
+            border-radius: 6px 0 0 6px;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+        }
+
+        .book {
+            padding: 2.5rem 3rem 3.5rem;
+        }
+
+        .cover {
+            text-align: center;
+            border-bottom: 2px solid #dac29c;
+            margin-bottom: 2.2rem;
+            padding-bottom: 1.8rem;
+        }
+        .cover h1 {
+            font-size: 3.6rem;
+            letter-spacing: 12px;
+            color: #6b3f1c;
+            font-weight: normal;
+            font-family: '华文楷书', '楷体', 'KaiTi', serif;
+            text-shadow: 2px 2px 3px rgba(100, 60, 20, 0.1);
+            margin-bottom: 0.5rem;
+        }
+        .cover .sub {
+            font-size: 1.2rem;
+            color: #9b7652;
+            border-top: 1px solid #e2cfaa;
+            display: inline-block;
+            padding-top: 0.8rem;
+            font-style: italic;
+        }
+        .cover-motto {
+            margin-top: 1.2rem;
+            font-size: 0.85rem;
+            color: #b28b5e;
+            letter-spacing: 2px;
+        }
+
+        .toc {
+            background: #faf1df;
+            border-left: 6px solid #c6a56e;
+            padding: 1.2rem 1.8rem;
+            margin: 2rem 0 2.5rem;
+            border-radius: 0 12px 12px 0;
+        }
+        .toc h2 {
+            font-size: 1.4rem;
+            font-weight: normal;
+            font-family: '楷体', 'KaiTi', serif;
+            border-bottom: 1px dashed #cfb584;
+            display: inline-block;
+            margin-bottom: 1rem;
+            color: #5a3a1c;
+        }
+        .toc-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem 2rem;
+        }
+        .toc-grid a {
+            text-decoration: none;
+            color: #7a562e;
+            font-size: 0.9rem;
+            border-bottom: 1px dotted #cfb584;
+            transition: 0.2s;
+        }
+        .toc-grid a:hover {
+            color: #b16224;
+            border-bottom-color: #b16224;
+        }
+
+        .diary-entry {
+            margin-bottom: 2.5rem;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+        .entry-date {
+            font-size: 1.15rem;
+            font-weight: bold;
+            color: #7a4e2a;
+            border-left: 5px solid #c6a56e;
+            padding-left: 14px;
+            margin-bottom: 0.7rem;
+            font-family: '楷体', 'KaiTi', serif;
+            background: linear-gradient(90deg, #fef3e2, transparent);
+        }
+        .entry-content {
+            text-indent: 2em;
+            margin-left: 1rem;
+            font-size: 1rem;
+            line-height: 1.75;
+            color: #2c2418;
+        }
+        .entry-content p {
+            margin-bottom: 0.6rem;
+            text-indent: 2em;
+        }
+        hr.divider {
+            margin: 1rem 0;
+            border: none;
+            height: 1px;
+            background: linear-gradient(to right, #e2cfaa, #b6904a, #e2cfaa);
+        }
+
+        .appendix {
+            margin-top: 3.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #dac29c;
+        }
+        .appendix h3 {
+            font-size: 1.3rem;
+            font-weight: normal;
+            font-family: '楷体', 'KaiTi', serif;
+            color: #6b3f1c;
+            margin-bottom: 0.8rem;
+        }
+        .list-box {
+            background: #faf1df;
+            padding: 1.2rem 2rem;
+            border-radius: 16px;
+            margin: 1rem 0;
+            box-shadow: inset 0 0 0 1px #fff8e8, 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .list-box p, .list-box li {
+            font-size: 0.95rem;
+        }
+        .signature {
+            text-align: right;
+            margin-top: 2rem;
+            font-family: '楷体', 'KaiTi', serif;
+            font-size: 0.9rem;
+            border-top: 1px dashed #cfb584;
+            padding-top: 1rem;
+            color: #8b6946;
+        }
+        .disclaimer {
+            margin-top: 2rem;
+            padding: 1rem 1.5rem;
+            background: #f5e8d4;
+            border-left: 4px solid #b6904a;
+            font-size: 0.8rem;
+            color: #7a562e;
+            border-radius: 8px;
+        }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .book-container { box-shadow: none; background: white; }
+            .book-container::before { display: none; }
+            .toc { background: #f9f2e2; break-inside: avoid; }
+        }
+
+        @media (max-width: 700px) {
+            .book { padding: 1.5rem; }
+            .cover h1 { font-size: 2.5rem; letter-spacing: 6px; }
+            .toc-grid a { font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="book-container">
+<div class="book">
+    <div class="cover">
+        <h1>方亨日记</h1>
+        <div class="sub">—— 仅记与吾女方圆的那些事</div>
+        <div class="cover-motto">「外圆内方 · 骨血不灭」</div>
+    </div>
+
+    <div class="toc">
+        <h2>📖 目 录</h2>
+        <div class="toc-grid">
+            <a href="#y0_1">崇祯九年·冬·出生之日</a>
+            <a href="#y0_2">崇祯十年·正月·洗三</a>
+            <a href="#y0_3">崇祯十年·腊月·周岁</a>
+            <a href="#y0_4">崇祯十一年·夏·第一次叫爹</a>
+            <a href="#y1">崇祯十年·三月初三·满月</a>
+            <a href="#y2">崇祯十二年·腊月二十三</a>
+            <a href="#y3">崇祯十四年·五月初五</a>
+            <a href="#y4">崇祯十五年·八月十五</a>
+            <a href="#y5">崇祯十五年·腊月三十</a>
+            <a href="#y6">崇祯十六年·六月初六</a>
+            <a href="#y7">崇祯十六年·十月·秋</a>
+            <a href="#y8">崇祯十七年·正月初七</a>
+            <a href="#y9">崇祯十七年·三月清明</a>
+            <a href="#y10">崇祯十七年·六月初六</a>
+            <a href="#y11">崇祯十七年·八月十五</a>
+            <a href="#y12">弘光元年·正月初八</a>
+            <a href="#y13">弘光元年·正月十五元宵</a>
+            <a href="#y14">弘光元年·五月初五端午</a>
+            <a href="#y15">弘光元年·七月初七七夕</a>
+            <a href="#y16">弘光元年·八月十五中秋</a>
+            <a href="#y17">弘光元年·八月二十二·绝笔</a>
+        </div>
+    </div>
+
+    <!-- 新增早期日记（更细腻的成长细节） -->
+    <div class="diary-entry" id="y0_1">
+        <div class="entry-date">崇祯九年 冬 十二月廿九 阴雨</div>
+        <div class="entry-content">
+            <p>今日，大小姐出生了。</p>
+            <p>她娘疼了整整一天一夜，嗓子都喊哑了。我站在产房外头，腿发软，手心里全是汗。稳婆出来的时候，我差点没站住。</p>
+            <p>“是个千金，母女平安。”</p>
+            <p>我冲进去，看见她娘脸色惨白，怀里抱着一个皱巴巴的小东西。那小东西眼睛还没睁开，嘴巴一瘪一瘪的，像在找什么。</p>
+            <p>她娘说：“你抱抱。”</p>
+            <p>我不敢。我手抖。</p>
+            <p>她娘笑我：“方大人，审案都不怕，怕抱闺女？”</p>
+            <p>我硬着头皮接过来。好轻，轻得像我手里空荡荡的官帽。她突然哭了一声，声音细细的，像猫叫。我整个人僵住了，一动不敢动。</p>
+            <p>她娘说：“你哄哄她。”</p>
+            <p>我张了张嘴，不知道说什么。最后憋出一句：“别哭了，爹在呢。”</p>
+            <p>她还真不哭了。</p>
+            <p>窗外阴雨绵绵，江阴城湿冷湿冷的。我抱着她，站在窗前，忽然觉得这辈子，值了。</p>
+        </div>
+    </div>
+    <hr class="divider">
+
+    <div class="diary-entry" id="y0_2">
+        <div class="entry-date">崇祯十年 正月 初六 晴</div>
+        <div class="entry-content">
+            <p>今日洗三。</p>
+            <p>老规矩，要请收生姥姥来给丫头洗澡。大哥、三弟、晚舟、厚敦都来了，围了一屋子。三弟那个莽夫，还带了把木剑来，说要给侄女“镇宅”。被大哥瞪了一眼，缩回去了。</p>
+            <p>丫头被脱光了放在铜盆里，小手小脚蹬来蹬去，哭得撕心裂肺。她娘在旁边心疼得直掉眼泪，我倒是笑了。</p>
+            <p>哭声响亮，说明身子骨结实。</p>
+            <p>收生姥姥说：“这孩子嗓门大，将来是个有主见的。”</p>
+            <p>我心想：有主见好，别像她爹，一辈子看人脸色。</p>
+            <p>晚上，她娘问我：“你想好名字了吗？”</p>
+            <p>我说：“想好了。叫方圆。”</p>
+            <p>她娘问：“什么讲究？”</p>
+            <p>我没说铜板的事，只说：“天圆地方，做人要外圆内方。”</p>
+            <p>她娘想了想，说：“好。方圆，好听。”</p>
+            <p>我在心里头补了一句：方圆，也是爹这辈子，最圆的月亮。</p>
+        </div>
+    </div>
+    <hr class="divider">
+
+    <div class="diary-entry" id="y0_3">
+        <div class="entry-date">崇祯十年 腊月 廿九 阴</div>
+        <div class="entry-content">
+            <p>大小姐周岁。</p>
+            <p>抓周。桌上摆了算盘、毛笔、铜板、胭脂、小木剑。</p>
+            <p>丫头坐在桌上，看看这个，看看那个。然后一把抓住了——铜板。</p>
+            <p>三弟哈哈大笑：“二哥，你闺女随你，财迷！”</p>
+            <p>我也笑。笑着笑着，眼眶有点热。</p>
+            <p>她娘问她：“方圆，你要这个？”</p>
+            <p>丫头把铜板攥得紧紧的，另一只手又去够毛笔。左手铜板，右手毛笔。</p>
+            <p>晚舟说：“这孩子，既能持家，又能修史。”</p>
+            <p>我没说话。我心里想的是：她以后想做什么就做什么，不用管别人怎么说。</p>
+            <p>晚上，她娘睡着了。我偷偷把那枚铜板从丫头手里抽出来，发现铜板上全是她的口水。我擦了擦，收进怀里。</p>
+            <p>这枚铜板，我替她收着。等她长大了，再给她。</p>
+        </div>
+    </div>
+    <hr class="divider">
+
+    <div class="diary-entry" id="y0_4">
+        <div class="entry-date">崇祯十一年 夏 六月初三 晴</div>
+        <div class="entry-content">
+            <p>大小姐会叫爹了。</p>
+            <p>其实不算叫，是“哒哒哒”地乱喊。她坐在床上，对着我张开手臂，嘴里“哒哒哒”地叫。</p>
+            <p>她娘说：“她在喊你。”</p>
+            <p>我说：“她喊的是哒哒，不是爹。”</p>
+            <p>她娘说：“你应一声试试。”</p>
+            <p>我试着应了一声：“哎。”</p>
+            <p>丫头笑了，露出两颗小米牙，又喊：“哒哒哒！”</p>
+            <p>我又应。</p>
+            <p>她喊了一下午，我应了一下午。嗓子都哑了。</p>
+            <p>晚上她睡着了，她娘说：“你傻不傻？”</p>
+            <p>我说：“不傻。她喊一声，我就应一声。她喊一辈子，我就应一辈子。”</p>
+            <p>她娘没说话，转过身去。我看见她肩膀在抖。</p>
+            <p>我知道，她不是哭。她是笑我傻。</p>
+        </div>
+    </div>
+    <hr class="divider">
+
+    <!-- 以下为原有日记（完整保留，已修正不合理之处） -->
+    <div class="diary-entry" id="y1">
+        <div class="entry-date">崇祯十年 三月初三 晴</div>
+        <div class="entry-content">
+            <p>今日，大小姐满月。</p>
+            <p>大哥送来一筐鸡蛋，三弟送来一把木剑（这莽夫，送什么剑），晚舟送来一套文房四宝，厚敦送来一包红糖——他说他也不知道送什么，看街上卖红糖的，就买了。</p>
+            <p>我把这些东西堆在桌上，抱着她，在院子里转了三圈。</p>
+            <p>她没哭。眼睛睁得大大的，盯着我看了好一会儿，然后打了个哈欠，睡着了。</p>
+            <p>名字的事，我想了好几天。</p>
+            <p>翻书？不翻。我这辈子最烦的就是那些之乎者也。</p>
+            <p>我盯着桌上的铜板看了半天。外圆内方。圆的是处世，方的是骨头。就叫方圆。</p>
+            <p>大小姐，你以后就知道了。这个名字，是你爹我这一辈子，最得意的一笔。不是当官，不是升迁，是给你取了这么个好名字。</p>
+            <p>晚上，我偷偷在铜板上刻了“方圆”两个字。等她长大了，给她。</p>
+        </div>
+    </div>
+    <hr class="divider">
+
+    <div class="diary-entry" id="y2">
+        <div class="entry-date">崇祯十二年 腊月二十三 雨夹雪</div>
+        <div class="entry-content">
+            <p>大小姐三岁了。</p>
+            <p>她今天问我：“爹，我娘呢？”</p>
+            <p>我说：“你娘去了很远的地方。”</p>
+            <p>她又问：“她为什么不回来？”</p>
+            <p>我说：“她回不来了。可她给你留了一样东西。”</p>
+            <p>“什么？”</p>
+            <p>“她把你留给了我。”</p>
+            <p>大小姐没听懂，跑去追蝴蝶了。</p>
+            <p>我站在院子里，站了很久。冷雨落在肩上，没觉得凉。</p>
+            <p>她娘走的时候，拉着我的手说：“方亨，你这个人，一辈子只会算计。可你别把咱闺女也算计进去。”</p>
+            <p>我说：“不算计。她是我方亨的命。”</p>
+        </div>
+    </div>
+    <hr class="divider">
+
+    <div class="diary-entry" id="y3">
+        <div class="entry-date">崇祯十四年 五月初五 晴</div>
+        <div class="entry-content">
+            <p>大小姐五岁了。</p>
+            <p>今天她把我最心爱的砚台搬走了，在上面栽了几株野花。</p>
+            <p>我假装生气，追着她满院子跑。她笑得咯咯的，跑得比我快。</p>
+            <p>跑累了，她蹲在墙角，喘着气说：“爹，你跑不动了，你老了。”</p>
+            <p>我说：“爹不老，爹还能背你去买马蹄酥。”</p>
+            <p>她伸出手臂：“抱。”</p>
+            <p>我抱起她，往街上走。</p>
+            <p>她在怀里问我：“爹，你为什么老是给我买马蹄酥？”</p>
+            <p>我说：“因为你爱吃。”</p>
+            <p>她说：“那你爱吃吗？”</p>
+            <p>我说：“爹不爱吃，甜的。”</p>
+            <p>她掰了一块，塞进我嘴里：“你尝尝，可好吃了。”</p>
+            <p>我嚼了。甜的。确实是甜的。</p>
+        </div>
+    </div>
+    <hr class="divider">
+
+    <div class="diary-entry" id="y4">
+        <div class="entry-date">崇祯十五年 八月十五 月圆</div>
+        <div class="entry-content">
+            <p>大小姐七岁。今日中秋。</p>
+            <p>晚上，我带她去街上逛灯市。她骑在我脖子上，小手揪着我的耳朵，一会儿要往东，一会儿要往西。</p>
+            <p>她看中了一盏兔子灯，说什么都不走了。</p>
+            <p>我摸摸兜里，就剩几个铜板。买了灯，就没钱买马蹄酥。</p>
+            <p>她眨眨眼：“不要马蹄酥，要灯。”</p>
+            <p>我买了。</p>
+            <p>她提着那盏灯，走了整整一条街。回去的路上，她在怀里睡着了，手还攥着灯不放。</p>
+            <p>我把她放在床上，想把灯拿开。她迷迷糊糊睁开眼，说：“爹，明天还看灯。”</p>
+            <p>我说：“看。年年都看。”</p>
+        </div>
+    </div>
+    <hr class="divider">
+
+    <div class="diary-entry" id="y5">
+        <div class="entry-date">崇祯十五年 腊月三十 阴冷</div>
+        <div class="entry-content">
+            <p>除夕。大小姐在院子里玩，冻得小手通红。</p>
+            <p>她把自己的围巾解下来，要给石狮子系上。我说：“回屋吧，别冻着了。”</p>
+            <p>她说：“石狮子冷。”</p>
+            <p>我说：“石头不怕冷。”</p>
+            <p>她想了想，说：“那爹怕不怕冷？”</p>
+            <p>我说：“爹不怕。”</p>
+            <p>她说：“那爹陪我一起。”</p>
+            <p>我蹲下来，陪她。她把手塞进我袖子里，说：“爹，你的手好热。”</p>
+            <p>我把她抱起来，说：“进屋。再待下去，你就着凉了。”</p>
+            <p>她在我怀里说：“爹，明年除夕，我们还一起守岁。”</p>
+            <p>我说：“好。”</p>
+        </div>
+    </div>
+    <hr class="divider">
+
+    <div class="diary-entry" id="y6">
+        <div class="entry-date">崇祯十六年 六月初六 晴</div>
+        <div class="entry-content">
+            <p>今日祭祖。大小姐快九岁了。</p>
+            <p>她站在祠堂里，跟着念祖训。念到“望江阴儿郎，后继有人”的时候，她扭头看了我一眼，小声问：“爹，我是女儿，算不算儿郎？”</p>
+            <p>我说：“算。你是大小姐，比儿郎还厉害。”</p>
+            <p>她笑了，露出两颗缺了的门牙。</p>
+            <p>大哥在旁边瞪我，说我祭祖的时候不庄重。</p>
+            <p>我心想：庄重什么？我闺女笑了，比什么都庄重。</p>
+        </div>
+    </div>
+    <hr class="divider">
+
+    <div class="diary-entry" id="y7">
+        <div class="entry-date">崇祯十六年 十月 秋 有风</div>
+        <div class="entry-content">
+            <p>大小姐开始学算卦了。</p>
+            <p>其实她哪会算卦，就是装模作样地摇签筒，然后瞎编。</p>
+            <p>可她编得真像那么回事。</p>
+            <p>那天她给我算了一卦，说：“爹，你近日有血光之灾，不宜出门。”</p>
+            <p>我说：“爹今天哪儿都不去，就在家陪你。”</p>
+            <p>她说：“算你识相。”</p>
+            <p>然后她跑出去玩了。</p>
+            <p>晚上，我在书房批公文，不小心被纸割破了手指。</p>
+            <p>还真有血光之灾。</p>
+            <p>这丫头，瞎猫碰上死耗子。</p>
+        </div>
+    </div>
+    <hr class="divider">
+
+    <div class="diary-entry" id="y8">
+        <div class="entry-date">崇祯十七年 正月初七 阴</div>
+        <div class="entry-content">
+            <p>大小姐十岁了。</p>
+            <p>她今天问我：“爹，你为什么总是收那些商人的银子？”</p>
+            <p>我说：“爹没……”</p>
+            <p>她打断我：“你别骗我。我看见过。”</p>
+            <p>我沉默了。</p>
+            <p>她又说：“你是不是有什么难处？你跟我说，我不告诉别人。”</p>
+            <p>我看着她的眼睛。那双眼睛，跟她娘一模一样。太聪明了，什么都瞒不住。</p>
+            <p>我说：“大小姐，有些事，爹现在不能告诉你。等以后，你就知道了。”</p>
+            <p>她看了我一会儿，说：“行。那我等你告诉我。”</p>
+            <p>然后她转身走了。</p>
+            <p>走了几步，又回头说：“爹，你别做坏事。你要是做了坏事，我就不理你了。”</p>
+            <p>我点头。</p>
+            <p>她走了以后，我在书房坐了很久。</p>
+            <p>大小姐，爹不会做坏事。爹做的每一件事，都是为江阴，为你。可现在不能说。说了，你就跟着担惊受怕了。</p>
+        </div>
+    </div>
+    <hr class="divider">
+
+    <div class="diary-entry" id="y9">
+        <div class="entry-date">崇祯十七年 三月 清明 雨</div>
+        <div class="entry-content">
+            <p>今日去城外祭拜她娘。</p>
+            <p>大小姐跪在坟前，磕了三个头，说：“娘，我长大了。我会照顾爹的。”</p>
+            <p>我在旁边听着，鼻子一酸。</p>
+            <p>她站起来，拍拍膝盖上的泥，说：“爹，走吧。回去给我买马蹄酥。”</p>
+            <p>我说：“好。”</p>
+            <p>路上，她突然问：“爹，你以后会不会不要我了？”</p>
+            <p>我说：“不会。”</p>
+            <p>她说：“那你要说话算话。”</p>
+            <p>我说：“算话。”</p>
+            <p>她伸出手指：“拉钩。”</p>
+            <p>我伸出手，跟她拉钩。</p>
+            <p>她的手小小的，热热的。</p>
+        </div>
+    </div>
+    <hr class="divider">
+
+    <div class="diary-entry" id="y10">
+        <div class="entry-date">崇祯十七年 六月初六 晴</div>
+        <div class="entry-content">
+            <p>今日祭祖。大小姐又长高了一点。</p>
+            <p>大哥让她跟着晚舟学修撰。她不乐意，但还是去了。</p>
+            <p>我知道她不乐意的原因——她怕自己学不好，丢我的脸。</p>
+            <p>傻丫头，你学得好不好，都是我方亨的女儿。丢什么脸？</p>
+            <p>可她不知道。她以为我在乎这些。</p>
+            <p>我什么都不在乎。我只在乎她开不开心。</p>
+        </div>
+    </div>
+    <hr class="divider">
+
+    <div class="diary-entry" id="y11">
+        <div class="entry-date">崇祯十七年 八月十五 月圆</div>
+        <div class="entry-content">
+            <p>中秋。大小姐穿着新衣裳，在院子里赏月。</p>
+            <p>我给她买了马蹄酥。她掰了一块，递给我：“爹，你尝尝。”</p>
+            <p>我说：“爹不吃。”</p>
+            <p>她说：“你尝尝嘛。我特意让人少放了糖。”</p>
+            <p>我接过来，吃了。确实不甜。可她笑得甜。</p>
+        </div>
+    </div>
+    <hr class="divider">
+
+    <div class="diary-entry" id="y12">
+        <div class="entry-date">弘光元年 正月初八 阴</div>
+        <div class="entry-content">
+            <p>常州府的调令来了。我要走了。</p>
+            <p>不是升官。是去当“叛徒”。</p>
+            <p>可我怎么说？我不能说。</p>
+            <p>我跟她说：“大小姐，爹升官了。爹被调去常州府，你先去你大伯家住一段时日。”</p>
+            <p>她斜着眼看我：“骗人。你就是怕了我，想躲几天吧？”</p>
+            <p>我笑着摇头：“不是不是。你看，这是朝廷下来的批文。”</p>
+            <p>她瞟了一眼批文，说：“切。也好，我整日看你就心烦。去我大伯那，也算静心。”</p>
+            <p>她嘴上这么说，可收拾行李的时候，她磨磨蹭蹭，什么都没带。</p>
+            <p>我给她收拾了十多个包袱，连铜镜、梳子都装进去了。</p>
+            <p>她说：“你是不是想给我送到陈府，盼着你自己不回来了？”</p>
+            <p>我说：“哪有。”</p>
+            <p>她最后还是只带了顾叔，什么都没拿。</p>
+            <p>我拖着那一大堆行李，送了她一路。她头也不回。</p>
+            <p>走到城门口，我说：“让老臣抱一下。”</p>
+            <p>她没回头。</p>
+            <p>我站在那儿，看着她的背影。</p>
+            <p>她走了几步，突然停下来。</p>
+            <p>我以为她会回头。</p>
+            <p>她没有。她继续走了。</p>
+            <p>我站了很久，直到看不见她了。落日熔金，官道上只剩我一个人。</p>
+            <p>我转身，走了。走得很快。怕自己回头。</p>
+        </div>
+    </div>
+    <hr class="divider">
+
+    <div class="diary-entry" id="y13">
+        <div class="entry-date">弘光元年 正月十五 元宵</div>
+        <div class="entry-content">
+            <p>今日元宵。常州府的灯市很热闹。我一个人站在衙门口，看着人来人往。</p>
+            <p>有个小女孩骑在她爹脖子上，手里提着一盏兔子灯。</p>
+            <p>她爹说：“下来吧，爹累了。”</p>
+            <p>小女孩说：“不，我还要看。”</p>
+            <p>她爹说：“好好好，看。年年都看。”</p>
+            <p>我转过身，回了屋。枕头底下，有块马蹄酥。是我从江阴带来的。已经硬了。</p>
+            <p>我掰了一块，塞进嘴里。嚼不动。可我没吐。</p>
+        </div>
+    </div>
+    <hr class="divider">
+
+    <div class="diary-entry" id="y14">
+        <div class="entry-date">弘光元年 五月初五 端午 晴</div>
+        <div class="entry-content">
+            <p>大小姐给我写信了。不是写给我的。是写给“元方”的。她不知道“元方”就是我。</p>
+            <p>信上写：“元方大善人，江阴今年雨水多，城西的桥塌了，需要银子修缮。方圆敬上。”</p>
+            <p>我看着信，笑了。这丫头，拿我的银子做善事，还瞒着我。</p>
+            <p>我让人送了一百两银子过去。署名“元方”。</p>
+            <p>晚上，我又收到一封信。这回是写给我的。信上只有一句话：“爹，我想你了。”</p>
+            <p>我看了一遍，又看了一遍。然后把信折好，塞进枕头底下。跟那块硬了的马蹄酥放在一起。</p>
+        </div>
+    </div>
+    <hr class="divider">
+
+    <div class="diary-entry" id="y15">
+        <div class="entry-date">弘光元年 七月初七 七夕 夜 星</div>
+        <div class="entry-content">
+            <p>今日，暗探告诉我，大小姐在江阴，被人绑去做“压寨夫人”了。我一听，差点没把桌子掀了。谁？谁这么大胆子？</p>
+            <p>后来一查，是杨玉笙那小子。关宁会的二当家，袁崇焕的儿子。</p>
+            <p>我派人去查他的底细。查完了，我反倒不气了。这小子，是个有骨气的。而且，他对大小姐，是真的。</p>
+            <p>可我嘴上不能这么说。我得骂。骂给清军看。我写信给大小姐：“杨玉笙那小子，你离他远点。”</p>
+            <p>信寄出去以后，我又写了一封，没寄。上面写着：“杨玉笙，你对我闺女好点。你要是敢欺负她，我方亨把你腿打折。”这封信，我烧了。不能寄。寄了，就穿帮了。</p>
+        </div>
+    </div>
+    <hr class="divider">
+
+    <div class="diary-entry" id="y16">
+        <div class="entry-date">弘光元年 八月十五 中秋 月圆</div>
+        <div class="entry-content">
+            <p>今日，我假扮顾元方，回了江阴。站在角落里，看着大小姐吃马蹄酥。</p>
+            <p>她瘦了。眼睛底下有青黑，没睡好。她咬了一口马蹄酥，皱了皱眉。大概觉得不够甜。</p>
+            <p>老臣做的，当然不够甜。老臣心里头苦，做出来的东西，能甜到哪去？可她还是吃完了。吃得干干净净。</p>
+            <p>我站在那儿，看着这满堂的家人。大哥在发月饼，三弟在给晚舟递红豆馅的，厚敦站在杨小池旁边，脸红得像煮熟的虾。稷儿和芙蓉挨着坐，玉笙那小子盯着方圆，眼睛都不带眨的。</p>
+            <p>还有你，大小姐。你又长高了。可你还是那个爱吃马蹄酥、爱装神弄鬼算卦、爱跟我顶嘴的大小姐。</p>
+            <p>我想走过去，喊一声“大小姐”。可我戴着面具。我是个“又聋又哑”的老仆人。我不能说话。</p>
+            <p>我站了一会儿，转身走了。走的时候，袖子底下攥着那枚刻着“方圆”二字的铜板。攥得手心发疼。</p>
+        </div>
+    </div>
+    <hr class="divider">
+
+    <div class="diary-entry" id="y17">
+        <div class="entry-date">弘光元年 八月二十二 夜 无星</div>
+        <div class="entry-content">
+            <p>明日，就是剃发令的最后一日了。大哥不会降。三弟不会降。谁都不会降。他们会死。我也会死。</p>
+            <p>可密道里那五十三个人，会活着。大小姐，你会活着。</p>
+            <p>老臣这辈子，欠你太多。欠你一个完整的家，欠你一个清清白白的爹，欠你无数个中秋和除夕，欠你一句“女儿，爹想你了”。还不上。只能用这条命抵。</p>
+            <p>老臣在清军营帐里，给你写这最后一篇日记。</p>
+            <p>那些马蹄酥，老臣每年都做了。放在枕头底下，硬了，扔了，再做。那些铜板，老臣攒了。一百五十五两，七十六枚。是你爹我这辈子，最干净的银子。</p>
+            <p>那枚刻着“方圆”二字的铜板，老臣带走了。带到黄泉路上。想你了，就摸一摸。</p>
+            <p>大小姐，你往后吃马蹄酥的时候，别嫌不够甜。老臣心里头不苦了。你活着，老臣就不苦了。你往前走。不用回头。老臣在身后，替你看着。没有鞑子。放心走。</p>
+            <p style="margin-top:1rem; text-align:right;">子时三更，平安无事。<br>方亨 绝笔<br>弘光元年 八月二十二 夜</p>
+        </div>
+    </div>
+
+    <div class="appendix">
+        <h3>📜 整理者后记</h3>
+        <div class="list-box">
+            <p>弘光元年八月二十二日夜，方亨于清军营帐中写下绝笔。次日江阴城破，方亨以身殉道，与清军同归于尽，史书仅得十二字：“叛贼方亨，深恩负义，遗臭万年。”</p>
+            <p>数百年后，江阴北山密道遗址清理时，于青砖夹层中发现一油纸包裹。内有一枚刻着“方圆”二字的铜板、七十六枚铜钱、一封字迹模糊的信，以及这本被血渍浸染的日记册页。纸张残损，字迹多处漫漶，经后人逐一辨识、补全，方成今日之貌。</p>
+            <p>方亨一生，贪名在外，忠骨在内。他不求青史留名，只求女儿平安，江阴火种不灭。这本日记，是他留给后世唯一的自白。</p>
+            <p style="margin-top:0.8rem;"><strong>愿江阴儿郎，后继有人。</strong><br>—— 后世修撰 谨识</p>
+        </div>
+
+        <h3>🎁 方亨遗物清单</h3>
+        <div class="list-box">
+            <ul>
+                <li>铜板一枚，上刻“方圆”二字（亲手所刻，自幼随身）</li>
+                <li>散碎银两：一百五十五两，铜钱七十六枚（任常州县令期间全部俸禄）</li>
+                <li>马蹄酥制作手札一份（含配方、火候、甜度调整记录）</li>
+                <li>空白卦签一筒（原为方圆所用，方亨暗中补充）</li>
+                <li>密道手绘图一张（标注岔路口及生门方向）</li>
+                <li>家谱残页一纸（方亨之名被陈明遇重新贴回后的拓印）</li>
+                <li>未寄出的信三封（收件人均为方圆，因怕暴露身份而未发出）</li>
+            </ul>
+        </div>
+
+        <!-- 免责声明 -->
+        <div class="disclaimer">
+            <strong>📌 免责声明</strong><br>
+            剧本杀《流芳》中的“方亨”为艺术再创作角色，其暗中抗清、以身入局等情节均属虚构。据史料记载，历史上的方亨（明末清初江阴知县）在清军南下时剃发降清，并协助清廷推行剃发令，是史有定论的“叛徒”。本日记完全基于剧本《流芳》的虚构剧情创作，请勿与真实历史人物混淆。故事虽假，情义为真；愿玩家在感动之余，亦能明辨史实与创作之界。
+        </div>
+
+        <div class="signature">
+            —— 纸短情长，骨血不散。江阴旧卷，永藏人间。
+        </div>
+    </div>
+</div>
+</div>
+</body>
+</html>
