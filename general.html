@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>密码生成器 · 作者专用</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none; /* 默认禁止选择 */
+        }
+        body {
+            background: #f0ebe0;
+            font-family: 'Segoe UI', '宋体', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .card {
+            background: #fffaf2;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            padding: 2rem;
+            max-width: 500px;
+            width: 100%;
+            border: 1px solid #e2cfaa;
+        }
+        h1 {
+            font-size: 1.5rem;
+            color: #5e3a1f;
+            border-left: 4px solid #c6a56e;
+            padding-left: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #7a562e;
+        }
+        input {
+            width: 100%;
+            padding: 0.8rem;
+            font-size: 1rem;
+            border: 1px solid #dac29c;
+            border-radius: 12px;
+            font-family: monospace;
+            background: #fefcf8;
+        }
+        button {
+            margin-top: 1rem;
+            background: #c6a56e;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 40px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #a8844a;
+        }
+        .result {
+            margin-top: 1.5rem;
+            background: #f5e8d4;
+            border-radius: 16px;
+            padding: 1rem;
+            word-break: break-all;
+        }
+        .result span {
+            font-family: monospace;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2c5a2e;
+            background: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 8px;
+            display: inline-block;
+            user-select: text !important;   /* 允许选中复制 */
+            -webkit-user-select: text !important;
+            cursor: text;
+        }
+        .note {
+            font-size: 0.8rem;
+            color: #8b6946;
+            margin-top: 1rem;
+            text-align: center;
+        }
+        .footer {
+            margin-top: 1rem;
+            font-size: 0.7rem;
+            color: #b0a088;
+            text-align: center;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+    <script>
+        // ========== 反调试与防复制（增强版） ==========
+        (function() {
+            // 1. 禁用右键、复制（密码区域除外）、剪切、拖拽
+            document.addEventListener('contextmenu', (e) => { e.preventDefault(); return false; });
+            document.addEventListener('copy', (e) => {
+                // 如果复制源在结果区域（.result span）内，则允许
+                if (e.target.closest && e.target.closest('.result span')) {
+                    return; // 不阻止
+                }
+                e.preventDefault();
+                return false;
+            });
+            document.addEventListener('cut', (e) => e.preventDefault());
+            document.addEventListener('dragstart', (e) => e.preventDefault());
+            document.addEventListener('selectstart', (e) => {
+                if (e.target.closest && e.target.closest('.result span')) return;
+                e.preventDefault();
+            });
+
+            // 2. 禁用 F12 和开发者工具快捷键
+            window.addEventListener('keydown', function(e) {
+                if (e.key === 'F12' || 
+                    (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) ||
+                    (e.ctrlKey && e.key === 'u')) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+            // 3. 检测开发者工具打开（简单检测）
+            let devtoolsOpen = false;
+            function detectDevTools() {
+                const threshold = 160;
+                const widthDiff = window.outerWidth - window.innerWidth > threshold;
+                const heightDiff = window.outerHeight - window.innerHeight > threshold;
+                if (widthDiff || heightDiff) {
+                    if (!devtoolsOpen) {
+                        devtoolsOpen = true;
+                        document.body.innerHTML = '<div style="text-align:center; padding:100px;"><h2>检测到开发者工具</h2><p>请关闭开发者工具后刷新页面。</p></div>';
+                    }
+                }
+            }
+            setInterval(detectDevTools, 1000);
+        })();
+    </script>
+</head>
+<body>
+<div class="card">
+    <h1>🔐 作者专用 · 解锁密码生成器</h1>
+    <label>用户提供的机器码：</label>
+    <input type="text" id="machineCode" placeholder="例如：A3F2D9C1E4B6" autocomplete="off">
+    <button id="generateBtn">生 成 密 码</button>
+    <div class="result" id="resultArea" style="display: none;">
+        📜 对应的解锁密码：<br><span id="passwordValue"></span>
+    </div>
+    <div class="note">
+
+    </div>
+    <div class="footer">DM0491 编著 · 离线工具</div>
+</div>
+
+<script>
+    // ========== 算法混淆（隐藏核心逻辑） ==========
+    // 私有密钥字符串拆分为多个部分，动态拼接
+    var _p1 = "DM0";
+    var _p2 = "49";
+    var _p3 = "1_S";
+    var _p4 = "ECR";
+    var _p5 = "ET_";
+    var _p6 = "2025";
+    var SECRET_KEY = _p1 + _p2 + _p3 + _p4 + _p5 + _p6;  // "DM0491_SECRET_2025"
+
+    // 混淆的哈希函数包装
+    function _hash(s) {
+        return CryptoJS.SHA256(s).toString(CryptoJS.enc.Hex);
+    }
+
+    function _genPass(machineCode) {
+        var combined = machineCode + SECRET_KEY;
+        var fullHash = _hash(combined);
+        return fullHash.substring(0, 12).toUpperCase();
+    }
+
+    // 界面交互
+    var inputEl = document.getElementById('machineCode');
+    var btn = document.getElementById('generateBtn');
+    var resultDiv = document.getElementById('resultArea');
+    var passSpan = document.getElementById('passwordValue');
+
+    function generate() {
+        var machineCode = inputEl.value.trim().toUpperCase();
+        if (machineCode.length === 0) {
+            alert('请输入机器码');
+            return;
+        }
+        var password = _genPass(machineCode);
+        passSpan.innerText = password;
+        resultDiv.style.display = 'block';
+    }
+
+    btn.addEventListener('click', generate);
+    inputEl.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') generate();
+    });
+</script>
+</body>
+</html>
