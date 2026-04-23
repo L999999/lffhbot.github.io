@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>方亨日记 · 江阴遗卷</title>
+    <link rel="icon" href="data:,">
     <style>
         * {
             margin: 0;
@@ -309,19 +310,23 @@
             </div>
         `;
     }
-
+        // For HQT my daughter
     renderToc();
     renderDiaries();
     renderAppendix();
 
-    // 防复制（保留右键、复制、剪切等禁止，但不再拦截F12）
     document.addEventListener('contextmenu', (e) => e.preventDefault());
     document.addEventListener('copy', (e) => e.preventDefault());
     document.addEventListener('cut', (e) => e.preventDefault());
     document.addEventListener('dragstart', (e) => e.preventDefault());
     document.addEventListener('selectstart', (e) => e.preventDefault());
-    // 注意：F12已解禁，不添加任何键盘拦截
-    // For HQT my daughter
+    window.addEventListener('keydown', function(e) {
+        if (e.key === 'F12' ||
+            (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) ||
+            (e.ctrlKey && e.key === 'u')) {
+            e.preventDefault();
+        }
+    });
 </script>
 </body>
 </html>
